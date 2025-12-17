@@ -27,10 +27,51 @@ class Round1Tests {
     }
 
     @Test
-    @DisplayName("sum test with one number out of bounds (negative)")
+    @DisplayName("sum test with number out of bounds (negative)")
     fun sumWithNegativeNumber() {
-        val result = DemoRound1Solution().sum(20, -1)
-        Assertions.assertEquals(120, result)
+        var throwable: IllegalArgumentException = Assertions.assertThrows(IllegalArgumentException::class.java) {
+            DemoRound1Solution().sum(20, -1)
+        }
+        Assertions.assertEquals(IllegalArgumentException::class.java, throwable.javaClass)
+
+        throwable = Assertions.assertThrows(IllegalArgumentException::class.java) {
+            DemoRound1Solution().sum(-1, 0)
+        }
+        Assertions.assertEquals(IllegalArgumentException::class.java, throwable.javaClass)
+
+        throwable = Assertions.assertThrows(IllegalArgumentException::class.java) {
+            DemoRound1Solution().sum(-1, -1)
+        }
+        Assertions.assertEquals(IllegalArgumentException::class.java, throwable.javaClass)
+    }
+
+    @Test
+    @DisplayName("sum test with number out of bounds (positive)")
+    fun sumWithPositiveNumber() {
+        var throwable: IllegalArgumentException = Assertions.assertThrows(IllegalArgumentException::class.java) {
+            DemoRound1Solution().sum(20, 101)
+        }
+        Assertions.assertEquals(IllegalArgumentException::class.java, throwable.javaClass)
+
+        throwable = Assertions.assertThrows(IllegalArgumentException::class.java) {
+            DemoRound1Solution().sum(101, 0)
+        }
+        Assertions.assertEquals(IllegalArgumentException::class.java, throwable.javaClass)
+
+        throwable = Assertions.assertThrows(IllegalArgumentException::class.java) {
+            DemoRound1Solution().sum(103, 104)
+        }
+        Assertions.assertEquals(IllegalArgumentException::class.java, throwable.javaClass)
+    }
+
+    @Test
+    @DisplayName("sum test with numbers out of bounds (positive and negative)")
+    fun sumWithPositiveAndNegativeNumber() {
+        var throwable: IllegalArgumentException = Assertions.assertThrows(IllegalArgumentException::class.java) {
+            DemoRound1Solution().sum(-1, 101)
+        }
+        Assertions.assertEquals(IllegalArgumentException::class.java, throwable.javaClass)
+
     }
 
 }
