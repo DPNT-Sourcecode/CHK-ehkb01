@@ -23,6 +23,33 @@ class CheckoutSolution {
             skusMap[sku] = quantity
         }
 
+        // 1st pass to handle free item offers
+        for ((sku, quantity) in skusMap) {
+            val item = ItemRepository.getItem(sku)
+            if (item != null) {
+                var remainingQuantity = quantity
+                val sortedOffers = item.specialOffers?.sortedByDescending { it.requiredQuantity } ?: emptyList()
+                for (offer in sortedOffers) {
+                    while (remainingQuantity >= offer.requiredQuantity) {
+                        when (offer.offerDetail) {
+                            is OfferType.OfferDetail.FreeItemOffer -> {
+
+                                val freeItemSKU = offer.offerDetail.freeItemSKU
+                                val freeItemQuantity = offer.offerDetail.freeItemQuantity
+                                deductFreeItemsQuantity(skusMap, freeItemSKU, freeItemQuantity)
+                            }
+
+                            else -> {
+                                // Do nothing for price offers in the first pass
+                            }
+                        }
+                        remainingQuantity -= offer.requiredQuantity
+                    }
+                }
+            }
+        }
+
+        // 2nd pass to calculate total price
         for ((sku, quantity) in skusMap) {
             println("$sku - $quantity")
             val item = ItemRepository.getItem(sku)
@@ -38,17 +65,7 @@ class CheckoutSolution {
                             }
 
                             is OfferType.OfferDetail.FreeItemOffer -> {
-                                // Free item offer does not affect the price of the current item
-                                // But the price of the item required for the free item should be calculated
                                 totalPrice += item.price * offer.requiredQuantity
-
-
-                                // But what if the free item is the same as the current item?
-                                // Or if the items are not ordered? and it already counted?
-                                val freeItemSKU = offer.offerDetail.freeItemSKU
-                                val freeItemQuantity = offer.offerDetail.freeItemQuantity
-                                //TODO: should only deduct if b was already visited in the skus
-                                totalPrice -= deductFreeItemsPrice(skusMap, freeItemSKU, freeItemQuantity)
                             }
                         }
                         remainingQuantity -= offer.requiredQuantity
@@ -71,18 +88,14 @@ class CheckoutSolution {
      * @param freeItemQuantity The quantity of the free item
      * @return The total price to deduct for the free items
      */
-    fun deductFreeItemsPrice(skusMap: MutableMap<String, Int>, freeItemSKU: String, freeItemQuantity: Int): Int {
+    fun deductFreeItemsQuantity(skusMap: MutableMap<String, Int>, freeItemSKU: String, freeItemQuantity: Int) {
         val freeItemCountInSkus = skusMap[freeItemSKU] ?: 0
         if (freeItemCountInSkus >= freeItemQuantity) {
             val freeItem = ItemRepository.getItem(freeItemSKU)
             if (freeItem != null) {
                 // Decrement the free items from the count in skus
-                // Still not working as expected, Why?
                 skusMap[freeItemSKU] = (skusMap[freeItemSKU] ?: 0) - (freeItemQuantity)
-                println("Deducting price. new quantity of $freeItemSKU is ${skusMap[freeItemSKU]}")
-                return freeItem.price * (freeItemCountInSkus - freeItemQuantity)
             }
         }
-        return 0
     }
 }
