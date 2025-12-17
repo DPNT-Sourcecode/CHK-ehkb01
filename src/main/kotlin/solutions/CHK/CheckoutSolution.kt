@@ -2,6 +2,9 @@ package solutions.CHK
 
 class CheckoutSolution {
     fun checkout(skus: String): Int {
-        TODO("Solution not implemented")
+        //calculate total price of items in the skus string
+        var totalPrice = 0
+
+
     }
 }
