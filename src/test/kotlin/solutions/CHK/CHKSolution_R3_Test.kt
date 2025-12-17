@@ -39,4 +39,12 @@ class CHKSolution_R3_Test {
         val result = CheckoutSolution().checkout("FF")
         Assertions.assertEquals(20, result)
     }
+
+    @Test
+    @DisplayName("chechout test with two Fs not qualifying for free item")
+    fun checkoutWithTwoAs() {
+        val result = CheckoutSolution().checkout("AA")
+        Assertions.assertEquals(100, result)
+    }
+
 }
