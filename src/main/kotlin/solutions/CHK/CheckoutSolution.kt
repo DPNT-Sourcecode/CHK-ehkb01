@@ -40,7 +40,7 @@ class CheckoutSolution {
                                         // Not enough items to qualify for free items
                                         break
                                     }
-                                    remainingQuantity -= offer.requiredQuantity
+                                    //remainingQuantity -= offer.requiredQuantity
                                 }
                                 val freeItemSKU = offer.offerDetail.freeItemSKU
                                 val freeItemQuantity = offer.offerDetail.freeItemQuantity
@@ -108,4 +108,5 @@ class CheckoutSolution {
         }
     }
 }
+
 
