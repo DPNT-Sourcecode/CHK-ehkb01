@@ -25,6 +25,7 @@ object ItemRepository {
         Item("C", 20, 0),
         Item("D", 15, 0),
         Item("E", 40, 0, listOf(OfferType(2, OfferType.OfferDetail.FreeItemOffer("B", 1)))),
+        Item("F", 10, 0, listOf(OfferType(2, OfferType.OfferDetail.FreeItemOffer("F", 1))))
     )
 
     fun getItem(sku: String): Item? {
