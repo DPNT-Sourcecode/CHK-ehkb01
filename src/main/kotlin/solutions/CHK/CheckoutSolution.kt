@@ -1,6 +1,7 @@
 package solutions.CHK
 
 import kotlin.collections.mutableMapOf
+import kotlin.collections.set
 
 
 /*** *
@@ -23,6 +24,7 @@ class CheckoutSolution {
         }
 
         skusMap.forEach { (sku, quantity) ->
+            println("$sku - $quantity")
             val item = ItemRepository.getItem(sku)
             if (item != null) {
                 //Always check the biggest offer first, if quantity is less or has remaining items, check the next offer
@@ -75,12 +77,13 @@ class CheckoutSolution {
             if (freeItem != null) {
                 // Decrement the free items from the count in skus
                 // Still not working as expected, Why?
-                skusMap[freeItemSKU]?.minus(freeItemQuantity)
+                skusMap[freeItemSKU] = (skusMap[freeItemSKU] ?: 0) - (freeItemQuantity)
                 return freeItem.price * freeItemCountInSkus
             }
         }
         return 0
     }
 }
+
 
 
