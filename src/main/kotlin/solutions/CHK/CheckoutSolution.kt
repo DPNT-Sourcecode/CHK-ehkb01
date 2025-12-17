@@ -45,7 +45,9 @@ class CheckoutSolution {
                                 val freeItemSKU = offer.offerDetail.freeItemSKU
                                 val freeItemQuantity = offer.offerDetail.freeItemQuantity
                                 totalPrice -= deductFreeItemsPrice(skusMap, freeItemSKU, freeItemQuantity)
-
+                                if ((skusMap[freeItemSKU] ?: 0) > freeItemQuantity) {
+                                    skusMap[freeItemSKU] = (skusMap[freeItemSKU] ?: 0) - freeItemQuantity
+                                }
                             }
                         }
                         remainingQuantity -= offer.requiredQuantity
@@ -69,7 +71,7 @@ class CheckoutSolution {
      * @return The total price to deduct for the free items
      */
     fun deductFreeItemsPrice(skusMap: Map<String, Int>, freeItemSKU: String, freeItemQuantity: Int): Int {
-        val freeItemCountInSkus = skusMap.count { it.toString() == freeItemSKU }
+        val freeItemCountInSkus = skusMap[freeItemSKU] ?: 0
         if (freeItemCountInSkus > freeItemQuantity) {
             val freeItem = ItemRepository.getItem(freeItemSKU)
             if (freeItem != null) {
@@ -81,3 +83,4 @@ class CheckoutSolution {
         return 0
     }
 }
+
