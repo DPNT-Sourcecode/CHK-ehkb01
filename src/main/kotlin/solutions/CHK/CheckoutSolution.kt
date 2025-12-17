@@ -1,5 +1,7 @@
 package solutions.CHK
 
+import kotlin.collections.mutableMapOf
+
 
 /*** *
  * checkout(string) -> integer
@@ -12,7 +14,14 @@ class CheckoutSolution {
     fun checkout(skus: String): Int {
         //calculate total price of items in the skus string
         var totalPrice = 0
+
+        // Create a map of SKU to quantity
+        val skusMap = mutableMapOf<String, Int>()
         skus.split("").filter { it.isNotEmpty() }.groupingBy { it }.eachCount().forEach { (sku, quantity) ->
+            skusMap[sku] = quantity
+        }
+
+        skusMap.forEach { (sku, quantity) ->
             val item = ItemRepository.getItem(sku)
             if (item != null) {
                 //Always check the biggest offer first, if quantity is less or has remaining items, check the next offer
@@ -35,7 +44,8 @@ class CheckoutSolution {
                                 // Or if the items are not ordered? and it already counted?
                                 val freeItemSKU = offer.offerDetail.freeItemSKU
                                 val freeItemQuantity = offer.offerDetail.freeItemQuantity
-                                totalPrice -= deductFreeItemsPrice(skus, freeItemSKU, freeItemQuantity)
+                                totalPrice -= deductFreeItemsPrice(skusMap, freeItemSKU, freeItemQuantity)
+
                             }
                         }
                         remainingQuantity -= offer.requiredQuantity
@@ -58,11 +68,13 @@ class CheckoutSolution {
      * @param freeItemQuantity The quantity of the free item
      * @return The total price to deduct for the free items
      */
-    fun deductFreeItemsPrice(skus: String, freeItemSKU: String, freeItemQuantity: Int): Int {
-        val freeItemCountInSkus = skus.count { it.toString() == freeItemSKU }
+    fun deductFreeItemsPrice(skusMap: Map<String, Int>, freeItemSKU: String, freeItemQuantity: Int): Int {
+        val freeItemCountInSkus = skusMap.count { it.toString() == freeItemSKU }
         if (freeItemCountInSkus > freeItemQuantity) {
             val freeItem = ItemRepository.getItem(freeItemSKU)
             if (freeItem != null) {
+                // Decrement the free items from the count in skus
+                skusMap[freeItemSKU]?.minus(freeItemQuantity)
                 return freeItem.price * freeItemCountInSkus
             }
         }
