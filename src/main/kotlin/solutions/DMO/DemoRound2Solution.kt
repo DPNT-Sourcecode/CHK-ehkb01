@@ -2,14 +2,19 @@ package solutions.DMO
 
 class DemoRound2Solution {
     fun arraySum(integerList: List<Int>): Int {
-        TODO("Solution not implemented")
+        return integerList.sum()
     }
 
     fun intRange(start: Int, end: Int): List<Int> {
-        TODO("Solution not implemented")
+        val result = mutableListOf<Int>()
+        for (j in start..end) {
+            result.add(j)
+        }
+        return result
     }
 
     fun filterPass(integerList: List<Int>, threshold: Int): List<Int> {
-        TODO("Solution not implemented")
+        return integerList.filter { it >= threshold }
     }
 }
+
