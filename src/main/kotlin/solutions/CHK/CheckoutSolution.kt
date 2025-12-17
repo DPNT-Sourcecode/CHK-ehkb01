@@ -29,6 +29,13 @@ class CheckoutSolution {
                                 // Free item offer does not affect the price of the current item
                                 // But the price of the item required for the free item should be calculated
                                 totalPrice += item.price * offer.requiredQuantity
+
+
+                                // But what if the free item is the same as the current item?
+                                // Or if the items are not ordered? and it already counted?
+                                val freeItemSKU = offer.offerDetail.freeItemSKU
+                                val freeItemQuantity = offer.offerDetail.freeItemQuantity
+                                totalPrice -= deductFreeItemsPrice(skus, freeItemSKU, freeItemQuantity)
                             }
                         }
                         remainingQuantity -= offer.requiredQuantity
@@ -40,5 +47,24 @@ class CheckoutSolution {
             }
         }
         return totalPrice
+    }
+
+    /***
+     * Deduct the price of free items from the total price
+     * @param skus The string containing the SKUs of all the products in the basket
+     * @param freeItemSKU The SKU of the free item
+     * @param freeItemQuantity The quantity of the free item
+     * @return The total price to deduct for the free items
+     */
+    fun deductFreeItemsPrice(skus: String, freeItemSKU: String, freeItemQuantity: Int): Int {
+        val freeItemCountInSkus = skus.count { it.toString() == freeItemSKU }
+        if (freeItemCountInSkus > 0) {
+            val freeItemsToDeduct = minOf(freeItemQuantity, freeItemCountInSkus)
+            val freeItem = ItemRepository.getItem(freeItemSKU)
+            if (freeItem != null) {
+                return freeItem.price * freeItemsToDeduct
+            }
+        }
+        return 0
     }
 }
