@@ -26,4 +26,32 @@ class CHKSolution_R1_Test {
         Assertions.assertEquals(130, result)
     }
 
+    @Test
+    @DisplayName("chechout test with more than 1 special offer")
+    fun checkoutWithMoreThanOneSpecialOffer() {
+        val result = CheckoutSolution().checkout("AAABB")
+        Assertions.assertEquals(175, result)
+    }
+
+    @Test
+    @DisplayName("chechout test with more than 1 special offer and remaining items for item A")
+    fun checkoutWithMoreThanOneSpecialOfferAndRemainingItems() {
+        val result = CheckoutSolution().checkout("AAAA")
+        Assertions.assertEquals(180, result)
+    }
+
+    @Test
+    @DisplayName("chechout test with invalid SKU")
+    fun checkoutWithInvalidSKU() {
+        val result = CheckoutSolution().checkout("ABCDX")
+        Assertions.assertEquals(-1, result)
+    }
+
+    @Test
+    @DisplayName("chechout test with empty string")
+    fun checkoutWithEmptyString() {
+        val result = CheckoutSolution().checkout("")
+        Assertions.assertEquals(0, result)
+    }
+
 }
