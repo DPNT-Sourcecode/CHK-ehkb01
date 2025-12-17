@@ -32,4 +32,11 @@ class CHKSolution_R2_Test {
         val result = CheckoutSolution().checkout("AAAAAAAA")
         Assertions.assertEquals(330, result)
     }
+
+    @Test
+    @DisplayName("chechout test when 2 different offers can be applied for the same SKU and remaining items")
+    fun checkoutWhenTwoDifferentOffersCanBeAppliedAndRemaining() {
+        val result = CheckoutSolution().checkout("AAAAAAAAA")
+        Assertions.assertEquals(380, result)
+    }
 }

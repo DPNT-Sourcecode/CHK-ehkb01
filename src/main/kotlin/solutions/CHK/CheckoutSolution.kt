@@ -58,11 +58,10 @@ class CheckoutSolution {
      */
     fun deductFreeItemsPrice(skus: String, freeItemSKU: String, freeItemQuantity: Int): Int {
         val freeItemCountInSkus = skus.count { it.toString() == freeItemSKU }
-        if (freeItemCountInSkus > 0) {
-            val freeItemsToDeduct = minOf(freeItemQuantity, freeItemCountInSkus)
+        if (freeItemCountInSkus > freeItemQuantity) {
             val freeItem = ItemRepository.getItem(freeItemSKU)
             if (freeItem != null) {
-                return freeItem.price * freeItemsToDeduct
+                return freeItem.price * freeItemCountInSkus
             }
         }
         return 0
