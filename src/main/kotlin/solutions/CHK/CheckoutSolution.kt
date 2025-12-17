@@ -31,7 +31,6 @@ class CheckoutSolution {
                 val sortedOffers = item.specialOffers?.sortedByDescending { it.requiredQuantity } ?: emptyList()
                 for (offer in sortedOffers) {
                     while (remainingQuantity >= offer.requiredQuantity) {
-                        println("remainingQuantity: $remainingQuantity for SKU: $sku with offer: $offer")
                         when (offer.offerDetail) {
                             is OfferType.OfferDetail.FreeItemOffer -> {
 
@@ -44,9 +43,12 @@ class CheckoutSolution {
                                 }
                                 val freeItemSKU = offer.offerDetail.freeItemSKU
                                 val freeItemQuantity = offer.offerDetail.freeItemQuantity
-                                deductFreeItemsQuantity(sku, skusMap, freeItemSKU, freeItemQuantity)
+                                val toDeductIfSameSku = deductFreeItemsQuantity(sku, skusMap, freeItemSKU, freeItemQuantity)
 
-                                println("requiredQuantity: ${offer.requiredQuantity}")
+                                if (sku == offer.offerDetail.freeItemSKU) {
+                                    // Adjust remaining quantity for same SKU free item offers
+                                    remainingQuantity -= toDeductIfSameSku
+                                }
                                 remainingQuantity -= offer.requiredQuantity
                             }
 
@@ -98,17 +100,18 @@ class CheckoutSolution {
      * @param freeItemQuantity The quantity of the free item
      * @return The total price to deduct for the free items
      */
-    fun deductFreeItemsQuantity(sku: String, skusMap: MutableMap<String, Int>, freeItemSKU: String, freeItemQuantity: Int) {
+    fun deductFreeItemsQuantity(sku: String, skusMap: MutableMap<String, Int>, freeItemSKU: String, freeItemQuantity: Int): Int {
         val freeItemCountInSkus = skusMap[freeItemSKU] ?: 0
         if (freeItemCountInSkus >= freeItemQuantity) {
             val freeItem = ItemRepository.getItem(freeItemSKU)
             if (freeItem != null) {
                 // Decrement the free items from the count in skus
-                println("Deducting $freeItemQuantity of free item $skusMap from SKU $sku")
+                //println("Deducting $freeItemQuantity of free item $skusMap from SKU $sku")
                 skusMap[freeItemSKU] = (skusMap[freeItemSKU] ?: 0) - (freeItemQuantity)
-                println("After deduction has quantity: ${skusMap[freeItemSKU]}")
+                return freeItemQuantity
             }
         }
+        return 0
     }
 }
 
