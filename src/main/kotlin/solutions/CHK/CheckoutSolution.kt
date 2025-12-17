@@ -23,7 +23,7 @@ class CheckoutSolution {
             skusMap[sku] = quantity
         }
 
-        skusMap.forEach { (sku, quantity) ->
+        for ((sku, quantity) in skusMap) {
             println("$sku - $quantity")
             val item = ItemRepository.getItem(sku)
             if (item != null) {
@@ -84,6 +84,7 @@ class CheckoutSolution {
         return 0
     }
 }
+
 
 
 
