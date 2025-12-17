@@ -15,25 +15,22 @@ class CheckoutSolution {
         skus.split("").filter { it.isNotEmpty() }.groupingBy { it }.eachCount().forEach { (sku, quantity) ->
             val item = ItemRepository.getItem(sku)
             if (item != null) {
-                val specialOffer = item.specialOffers?.find {
-                    when (it.offerDetail) {
-                        is OfferType.OfferDetail.PriceOffer -> true
-                        else -> false
+                //Always check the biggest offer first, if quantity is less or has remaining items, check the next offer
+                var remainingQuantity = quantity
+                val sortedOffers = item.specialOffers?.sortedByDescending { it.requiredQuantity } ?: emptyList()
+                for (offer in sortedOffers) {
+                    while (remainingQuantity >= offer.requiredQuantity) {
+                        when (offer.offerDetail) {
+                            is OfferType.OfferDetail.PriceOffer -> {
+                                totalPrice += offer.offerDetail.offerPrice
+                            }
+
+                            is OfferType.OfferDetail.FreeItemOffer -> {
+                                // Free item offer does not affect the price of the current item
+                            }
+                        }
+                        remainingQuantity -= offer.requiredQuantity
                     }
-                }?.let {
-                    when (it.offerDetail) {
-                        is OfferType.OfferDetail.PriceOffer -> it
-                        else -> null
-                    }
-                }
-                if (specialOffer != null) {
-                    val offerQuantity = specialOffer.requiredQuantity
-                    val offerPrice = (specialOffer.offerDetail as OfferType.OfferDetail.PriceOffer).offerPrice
-                    val numberOfOffers = quantity / offerQuantity
-                    val remainingItems = quantity % offerQuantity
-                    totalPrice += numberOfOffers * offerPrice + remainingItems * item.price
-                } else {
-                    totalPrice += quantity * item.price
                 }
             } else {
                 // Invalid SKU found

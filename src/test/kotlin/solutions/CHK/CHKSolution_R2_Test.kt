@@ -11,4 +11,11 @@ class CHKSolution_R2_Test {
         val result = CheckoutSolution().checkout("AAAAA")
         Assertions.assertEquals(200, result)
     }
+
+    @Test
+    @DisplayName("chechout test with free item offer E")
+    fun checkoutWithFreeItemOfferE() {
+        val result = CheckoutSolution().checkout("EE")
+        Assertions.assertEquals(80, result)
+    }
 }
