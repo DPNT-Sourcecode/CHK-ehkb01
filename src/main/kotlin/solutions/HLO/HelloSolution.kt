@@ -2,7 +2,8 @@ package solutions.HLO
 
 class HelloSolution {
     fun hello(friendName: String): String {
-        return "Hello, $friendName!"
+        return "Hello, World!"
     }
 }
+
 
