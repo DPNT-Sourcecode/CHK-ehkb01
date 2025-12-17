@@ -74,6 +74,10 @@ class EntryPointMapping {
     
     // Demo Round 1
 
+    fun sum(num1: Int, num2: Int): Int {
+        return demoRound1Solution.sum(num1, num2)
+    }
+
     fun increment(p: List<ParamAccessor>): Any? {
         return demoRound1Solution.increment(p[0].asInteger)
     }
