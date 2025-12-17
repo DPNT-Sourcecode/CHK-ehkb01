@@ -45,13 +45,14 @@ class CheckoutSolution {
                                 val freeItemSKU = offer.offerDetail.freeItemSKU
                                 val freeItemQuantity = offer.offerDetail.freeItemQuantity
                                 deductFreeItemsQuantity(sku, skusMap, freeItemSKU, freeItemQuantity)
+
+                                remainingQuantity -= offer.requiredQuantity
                             }
 
                             else -> {
                                 // Do nothing for price offers in the first pass
                             }
                         }
-                        remainingQuantity -= offer.requiredQuantity
                     }
                 }
             }
@@ -108,5 +109,6 @@ class CheckoutSolution {
         }
     }
 }
+
 
 
