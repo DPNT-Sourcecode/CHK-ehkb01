@@ -31,6 +31,7 @@ class CheckoutSolution {
                 val sortedOffers = item.specialOffers?.sortedByDescending { it.requiredQuantity } ?: emptyList()
                 for (offer in sortedOffers) {
                     while (remainingQuantity >= offer.requiredQuantity) {
+                        println("remainingQuantity: $remainingQuantity for SKU: $sku with offer: $offer")
                         when (offer.offerDetail) {
                             is OfferType.OfferDetail.FreeItemOffer -> {
 
@@ -39,6 +40,7 @@ class CheckoutSolution {
                                         // Not enough items to qualify for free items
                                         break
                                     }
+                                    remainingQuantity -= offer.requiredQuantity
                                 }
                                 val freeItemSKU = offer.offerDetail.freeItemSKU
                                 val freeItemQuantity = offer.offerDetail.freeItemQuantity
@@ -106,3 +108,4 @@ class CheckoutSolution {
         }
     }
 }
+
