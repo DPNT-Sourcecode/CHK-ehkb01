@@ -46,6 +46,7 @@ class CheckoutSolution {
                                 val freeItemQuantity = offer.offerDetail.freeItemQuantity
                                 deductFreeItemsQuantity(sku, skusMap, freeItemSKU, freeItemQuantity)
 
+                                println("requiredQuantity: ${offer.requiredQuantity}")
                                 remainingQuantity -= offer.requiredQuantity
                             }
 
@@ -105,10 +106,12 @@ class CheckoutSolution {
                 // Decrement the free items from the count in skus
                 println("Deducting $freeItemQuantity of free item $skusMap from SKU $sku")
                 skusMap[freeItemSKU] = (skusMap[freeItemSKU] ?: 0) - (freeItemQuantity)
+                println("After deduction has quantity: ${skusMap[freeItemSKU]}")
             }
         }
     }
 }
+
 
 
 
