@@ -100,7 +100,7 @@ class CheckoutSolution {
             val freeItem = ItemRepository.getItem(freeItemSKU)
             if (freeItem != null) {
                 // Decrement the free items from the count in skus
-                println("Deducting $freeItemQuantity of free item $freeItemSKU for purchasing $sku")
+                println("Deducting $freeItemQuantity of free item $skusMap from SKU $sku")
                 skusMap[freeItemSKU] = (skusMap[freeItemSKU] ?: 0) - (freeItemQuantity)
             }
         }
