@@ -9,6 +9,7 @@ import kotlin.collections.mutableMapOf
  *  - @return = an integer representing the total checkout value of the items
  *
  *  NOTE: Offers involving multiple items always give a better discount than offers containing fewer items.
+ *  Normally E costs 40, but if you buy 2 of Es you will get B free.
  */
 class CheckoutSolution {
     fun checkout(skus: String): Int {
@@ -45,9 +46,6 @@ class CheckoutSolution {
                                 val freeItemSKU = offer.offerDetail.freeItemSKU
                                 val freeItemQuantity = offer.offerDetail.freeItemQuantity
                                 totalPrice -= deductFreeItemsPrice(skusMap, freeItemSKU, freeItemQuantity)
-                                if ((skusMap[freeItemSKU] ?: 0) > freeItemQuantity) {
-                                    skusMap[freeItemSKU] = (skusMap[freeItemSKU] ?: 0) - freeItemQuantity
-                                }
                             }
                         }
                         remainingQuantity -= offer.requiredQuantity
@@ -70,12 +68,13 @@ class CheckoutSolution {
      * @param freeItemQuantity The quantity of the free item
      * @return The total price to deduct for the free items
      */
-    fun deductFreeItemsPrice(skusMap: Map<String, Int>, freeItemSKU: String, freeItemQuantity: Int): Int {
+    fun deductFreeItemsPrice(skusMap: MutableMap<String, Int>, freeItemSKU: String, freeItemQuantity: Int): Int {
         val freeItemCountInSkus = skusMap[freeItemSKU] ?: 0
         if (freeItemCountInSkus > freeItemQuantity) {
             val freeItem = ItemRepository.getItem(freeItemSKU)
             if (freeItem != null) {
                 // Decrement the free items from the count in skus
+                // Still not working as expected, Why?
                 skusMap[freeItemSKU]?.minus(freeItemQuantity)
                 return freeItem.price * freeItemCountInSkus
             }
@@ -83,4 +82,5 @@ class CheckoutSolution {
         return 0
     }
 }
+
 
