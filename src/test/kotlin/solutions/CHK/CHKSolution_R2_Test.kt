@@ -58,7 +58,7 @@ class CHKSolution_R2_Test {
     @DisplayName("chechout test with free item offers E and multiple Bs and remaining B")
     fun checkoutWithFreeItemOffersEAndMultipleBsAndRemainingB() {
         val result = CheckoutSolution().checkout("EEEEBBB")
-        Assertions.assertEquals(80, result)
+        Assertions.assertEquals(190, result)
     }
 
 }
