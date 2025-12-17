@@ -47,6 +47,7 @@ class CheckoutSolution {
                                 // Or if the items are not ordered? and it already counted?
                                 val freeItemSKU = offer.offerDetail.freeItemSKU
                                 val freeItemQuantity = offer.offerDetail.freeItemQuantity
+                                //TODO: should only deduct if b was already visited in the skus
                                 totalPrice -= deductFreeItemsPrice(skusMap, freeItemSKU, freeItemQuantity)
                             }
                         }
