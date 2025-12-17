@@ -72,18 +72,20 @@ class CheckoutSolution {
      */
     fun deductFreeItemsPrice(skusMap: MutableMap<String, Int>, freeItemSKU: String, freeItemQuantity: Int): Int {
         val freeItemCountInSkus = skusMap[freeItemSKU] ?: 0
-        if (freeItemCountInSkus > freeItemQuantity) {
+        if (freeItemCountInSkus >= freeItemQuantity) {
             val freeItem = ItemRepository.getItem(freeItemSKU)
             if (freeItem != null) {
                 // Decrement the free items from the count in skus
                 // Still not working as expected, Why?
                 skusMap[freeItemSKU] = (skusMap[freeItemSKU] ?: 0) - (freeItemQuantity)
-                return freeItem.price * freeItemCountInSkus
+                println("Deducting price. new quantity of $freeItemSKU is ${skusMap[freeItemSKU]}")
+                return freeItem.price * (skusMap[freeItemSKU]?: 0)
             }
         }
         return 0
     }
 }
+
 
 
 
