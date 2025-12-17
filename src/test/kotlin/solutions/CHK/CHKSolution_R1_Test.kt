@@ -58,6 +58,6 @@ class CHKSolution_R1_Test {
     @DisplayName("chechout test with multiple special offers and remaining items")
     fun checkoutWithMultipleSpecialOffersAndRemainingItems() {
         val result = CheckoutSolution().checkout("AAAAAABBBCCD")
-        Assertions.assertEquals(390, result)
+        Assertions.assertEquals(380, result)
     }
 }

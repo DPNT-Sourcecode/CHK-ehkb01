@@ -41,6 +41,8 @@ class CheckoutSolution {
                         remainingQuantity -= offer.requiredQuantity
                     }
                 }
+                // Add the price of remaining items that do not qualify for any offer
+                totalPrice += remainingQuantity * item.price
             } else {
                 // Invalid SKU found
                 return -1
