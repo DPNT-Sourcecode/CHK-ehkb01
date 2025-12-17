@@ -3,12 +3,13 @@ package solutions.DMO
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import solutions.SUM.SumSolution
 
 class Round1Tests {
     @Test
     @DisplayName("sum test with 2 correct numbers")
     fun sum() {
-        val result = DemoRound1Solution().sum(10, 20)
+        val result = SumSolution().sum(10, 20)
         Assertions.assertEquals(30, result)
     }
 

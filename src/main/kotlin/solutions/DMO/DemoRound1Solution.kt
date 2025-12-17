@@ -29,4 +29,3 @@ class DemoRound1Solution {
         return text.split('\n').size
     }
 }
-

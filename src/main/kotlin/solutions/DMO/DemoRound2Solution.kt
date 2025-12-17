@@ -17,4 +17,3 @@ class DemoRound2Solution {
         return integerList.filter { it >= threshold }
     }
 }
-
