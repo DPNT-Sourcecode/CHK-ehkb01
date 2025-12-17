@@ -4,6 +4,8 @@ import io.accelerate.client.runner.ChallengeSession
 import runner.Utils.getConfig
 import runner.Utils.getRunnerConfig
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import kotlin.system.exitProcess
+
 /**
  * ~~~~~~~~~~ Running the system: ~~~~~~~~~~~~~
  *
@@ -73,9 +75,15 @@ fun main(args: Array<String>) {
         .withJacksonModule(KotlinModule.Builder().build())
         .create()
 
+    try {
     ChallengeSession.forRunner(runner)
         .withConfig(getConfig())
         .withActionProvider(UserInputAction(args))
         .start()
+    } catch (t: Throwable) {
+        t.printStackTrace() // mostra a causa real do erro
+        exitProcess(1)
+    }
 }
+
 
