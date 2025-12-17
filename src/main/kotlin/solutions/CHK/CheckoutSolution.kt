@@ -27,6 +27,8 @@ class CheckoutSolution {
 
                             is OfferType.OfferDetail.FreeItemOffer -> {
                                 // Free item offer does not affect the price of the current item
+                                // But the price of the item required for the free item should be calculated
+                                totalPrice += item.price * offer.requiredQuantity
                             }
                         }
                         remainingQuantity -= offer.requiredQuantity

@@ -18,4 +18,18 @@ class CHKSolution_R2_Test {
         val result = CheckoutSolution().checkout("EE")
         Assertions.assertEquals(80, result)
     }
+
+    @Test
+    @DisplayName("chechout test with free item offer E and B")
+    fun checkoutWithFreeItemOfferEAndB() {
+        val result = CheckoutSolution().checkout("EEB")
+        Assertions.assertEquals(80, result)
+    }
+
+    @Test
+    @DisplayName("chechout test when 2 different offers can be applied for the same SKU")
+    fun checkoutWhenTwoDifferentOffersCanBeApplied() {
+        val result = CheckoutSolution().checkout("AAAAAAAA")
+        Assertions.assertEquals(330, result)
+    }
 }
