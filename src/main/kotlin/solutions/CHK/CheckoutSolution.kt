@@ -79,7 +79,7 @@ class CheckoutSolution {
                 // Still not working as expected, Why?
                 skusMap[freeItemSKU] = (skusMap[freeItemSKU] ?: 0) - (freeItemQuantity)
                 println("Deducting price. new quantity of $freeItemSKU is ${skusMap[freeItemSKU]}")
-                return freeItem.price * (skusMap[freeItemSKU]?: 0)
+                return freeItem.price * (freeItemCountInSkus - freeItemQuantity)
             }
         }
         return 0

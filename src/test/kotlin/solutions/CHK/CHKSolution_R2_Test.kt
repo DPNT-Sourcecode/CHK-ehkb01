@@ -39,4 +39,6 @@ class CHKSolution_R2_Test {
         val result = CheckoutSolution().checkout("AAAAAAAAA")
         Assertions.assertEquals(380, result)
     }
+
+
 }
