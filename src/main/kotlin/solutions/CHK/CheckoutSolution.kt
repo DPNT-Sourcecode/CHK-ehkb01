@@ -114,7 +114,3 @@ class CheckoutSolution {
         return 0
     }
 }
-
-
-
-
