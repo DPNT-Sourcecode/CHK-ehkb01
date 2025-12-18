@@ -63,7 +63,7 @@ class CheckoutSolution {
 
         // 2nd pass to calculate total price
         for ((sku, quantity) in skusMap) {
-            //println("$sku - $quantity")
+            println("$sku - $quantity")
             val item = ItemRepository.getItem(sku)
             if (item != null) {
                 //Always check the biggest offer first, if quantity is less or has remaining items, check the next offer
@@ -71,6 +71,7 @@ class CheckoutSolution {
                 val sortedOffers = item.specialOffers?.sortedByDescending { it.requiredQuantity } ?: emptyList()
                 for (offer in sortedOffers) {
                     while (remainingQuantity >= offer.requiredQuantity) {
+                        println("remainingQuantity: $remainingQuantity for SKU: $sku applying offer: $offer")
                         when (offer.offerDetail) {
                             is OfferType.OfferDetail.PriceOffer -> {
                                 totalPrice += offer.offerDetail.offerPrice
