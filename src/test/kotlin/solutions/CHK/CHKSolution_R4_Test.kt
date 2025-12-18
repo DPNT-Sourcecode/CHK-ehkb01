@@ -54,4 +54,3 @@ class CHKSolution_R4_Test {
         Assertions.assertEquals(120, result)
     }
 }
-
