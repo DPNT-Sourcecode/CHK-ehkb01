@@ -106,7 +106,8 @@ class CheckoutSolution {
 
             // Deduct the used items from the skusMap
             var itemsToDeduct = numberOfGroupOffers * groupQuantity
-            for (groupSKU in groupSKUs) {
+            val sortedGroupSKUs = groupSKUs.sortedByDescending { ItemRepository.getItem(it)?.price ?: 0 }
+            for (groupSKU in sortedGroupSKUs) { // Should be in order of most expensive to the least expensive
                 val availableItems = skusMap[groupSKU] ?: 0
                 if (availableItems > 0) {
                     val deductCount = minOf(availableItems, itemsToDeduct)
@@ -188,4 +189,5 @@ class CheckoutSolution {
         return 0
     }
 }
+
 
