@@ -33,15 +33,16 @@ class CHKSolution_R5_Test {
     }
 
     @Test
-    @DisplayName("checkout test with group offer of 3 items S,T,X,Y,Z with multiple offers")
-    fun checkoutWithGroupOfferOf3ItemsSTXYZWithMultipleOffers() {
-        val result = CheckoutSolution().checkout("SSSTTTXXXYYYZZZ")
-        Assertions.assertEquals(225, result)
-    }
-    @Test
     @DisplayName("checkout test with group offer of 3 items S,T,X with multiple offers")
     fun checkoutWithGroupOfferOf3ItemsSTXWithMultipleOffers() {
         val result = CheckoutSolution().checkout("STXSTX")
+        Assertions.assertEquals(90, result)
+    }
+
+    @Test
+    @DisplayName("checkout test with group offer of 3 items S,T,X,Y,Z with multiple offers")
+    fun checkoutWithGroupOfferOf3ItemsSTXYZWithMultipleOffers() {
+        val result = CheckoutSolution().checkout("SSSTTTXXXYYYZZZ")
         Assertions.assertEquals(225, result)
     }
 }

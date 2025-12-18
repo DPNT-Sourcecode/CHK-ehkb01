@@ -83,10 +83,10 @@ class CheckoutSolution {
     fun handleGroupOffers(skusMap: MutableMap<String, Int>, sku: String, offer: OfferType, processedForGroupOffers: MutableMap<String, Boolean>): Int {
         var totalPrice = 0
         val groupOffer = offer.offerDetail as? OfferType.OfferDetail.GroupOffer ?: return 0
-        groupOffer.groupSKUs.forEach {
+        /*groupOffer.groupSKUs.forEach {
             // Already processed for group offers
             if (processedForGroupOffers[it] == true) return 0
-        }
+        }*/
 
         val groupSKUs = offer.offerDetail.groupSKUs
         val groupQuantity = offer.offerDetail.groupQuantity
@@ -119,9 +119,9 @@ class CheckoutSolution {
         }
         println("new skusMap after group offer deduction: $skusMap")
         // Mark all group SKUs as processed for group offers
-        for (groupSKU in groupSKUs) {
+        /*for (groupSKU in groupSKUs) {
             processedForGroupOffers[groupSKU] = true
-        }
+        }*/
         return totalPrice
     }
 
