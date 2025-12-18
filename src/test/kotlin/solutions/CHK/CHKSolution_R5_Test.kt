@@ -6,6 +6,12 @@ import org.junit.jupiter.api.Test
 
 class CHKSolution_R5_Test {
     @Test
+    @DisplayName("checkout test with not enough for group offer of 3 items S,T,X,Y,Z")
+    fun checkoutWithNotEnoughForGroupOffer() {
+        val result = CheckoutSolution().checkout("ST")
+        Assertions.assertEquals(40, result)
+    }
+    @Test
     @DisplayName("checkout test with group offer of 3 items S,T,X,Y,Z")
     fun checkoutWithGroupOfferOf3ItemsSTXYZ() {
         val result = CheckoutSolution().checkout("STX")
