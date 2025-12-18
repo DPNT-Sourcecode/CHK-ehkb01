@@ -15,6 +15,7 @@ data class OfferType(
     sealed class OfferDetail {
         data class PriceOffer(val offerPrice: Int) : OfferDetail()
         data class FreeItemOffer(val freeItemSKU: String, val freeItemQuantity: Int) : OfferDetail()
+        data class GroupOffer(val groupSKUs: List<String>, val groupQuantity: Int, val offerPrice: Int) : OfferDetail()
     }
 }
 
@@ -30,7 +31,7 @@ object ItemRepository {
         Item("H", 10, 0, listOf(OfferType(5, OfferType.OfferDetail.PriceOffer(45)), OfferType(10, OfferType.OfferDetail.PriceOffer(80)))),
         Item("I", 35, 0),
         Item("J", 60, 0),
-        Item("K", 80, 0, listOf(OfferType(2, OfferType.OfferDetail.PriceOffer(150)))),
+        Item("K", 70, 0, listOf(OfferType(2, OfferType.OfferDetail.PriceOffer(120)))),
         Item("L", 90, 0),
         Item("M", 15, 0),
         Item("N", 40, 0, listOf(OfferType(3, OfferType.OfferDetail.FreeItemOffer("M", 1)))),
@@ -38,14 +39,14 @@ object ItemRepository {
         Item("P", 50, 0, listOf(OfferType(5, OfferType.OfferDetail.PriceOffer(200)))),
         Item("Q", 30, 0, listOf(OfferType(3, OfferType.OfferDetail.PriceOffer(80)))),
         Item("R", 50, 0, listOf(OfferType(3, OfferType.OfferDetail.FreeItemOffer("Q", 1)))),
-        Item("S", 30, 0),
-        Item("T", 20, 0),
+        Item("S", 20, 0, listOf(OfferType(3, OfferType.OfferDetail.GroupOffer(listOf("S", "T", "X", "Y", "Z"), 3, 45)))),
+        Item("T", 20, 0, listOf(OfferType(3, OfferType.OfferDetail.GroupOffer(listOf("S", "T", "X", "Y", "Z"), 3, 45)))),
         Item("U", 40, 0, listOf(OfferType(3, OfferType.OfferDetail.FreeItemOffer("U", 1)))),
         Item("V", 50, 0, listOf(OfferType(2, OfferType.OfferDetail.PriceOffer(90)), OfferType(3, OfferType.OfferDetail.PriceOffer(130)))),
         Item("W", 20, 0),
-        Item("X", 90, 0),
-        Item("Y", 10, 0),
-        Item("Z", 50, 0)
+        Item("X", 17, 0, listOf(OfferType(3, OfferType.OfferDetail.GroupOffer(listOf("S", "T", "X", "Y", "Z"), 3, 45)))),
+        Item("Y", 20, 0, listOf(OfferType(3, OfferType.OfferDetail.GroupOffer(listOf("S", "T", "X", "Y", "Z"), 3, 45)))),
+        Item("Z", 21, 0, listOf(OfferType(3, OfferType.OfferDetail.GroupOffer(listOf("S", "T", "X", "Y", "Z"), 3, 45))))
     )
 
     fun getItem(sku: String): Item? {

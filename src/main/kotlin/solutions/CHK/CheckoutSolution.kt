@@ -23,44 +23,12 @@ class CheckoutSolution {
             skusMap[sku] = quantity
         }
 
+        // Create a map to store the skus alrady processed for group offers, to avoid double counting
+        val processedForGroupOffers = mutableMapOf<String, Boolean>()
+
         // 1st pass to handle free item offers
-        for ((sku, quantity) in skusMap) {
-            val item = ItemRepository.getItem(sku)
-            if (item != null) {
-                var remainingQuantity = quantity
-                val sortedOffers = item.specialOffers?.sortedByDescending { it.requiredQuantity } ?: emptyList()
-                for (offer in sortedOffers) {
-                    while (remainingQuantity >= offer.requiredQuantity) {
-                        when (offer.offerDetail) {
-                            is OfferType.OfferDetail.FreeItemOffer -> {
+        handleFreeItemOffers(skusMap)
 
-                                if (sku == offer.offerDetail.freeItemSKU) { // Special case: free item is the same as the purchased item (e.g., F)
-                                    if (remainingQuantity < offer.requiredQuantity + offer.offerDetail.freeItemQuantity) {
-                                        // Not enough items to qualify for free items
-                                        break
-                                    }
-                                    //remainingQuantity -= offer.requiredQuantity
-                                }
-                                val freeItemSKU = offer.offerDetail.freeItemSKU
-                                val freeItemQuantity = offer.offerDetail.freeItemQuantity
-                                val toDeductIfSameSku = deductFreeItemsQuantity(sku, skusMap, freeItemSKU, freeItemQuantity)
-
-                                if (sku == offer.offerDetail.freeItemSKU) {
-                                    // Adjust remaining quantity for same SKU free item offers
-                                    remainingQuantity -= toDeductIfSameSku
-                                }
-                                remainingQuantity -= offer.requiredQuantity
-                            }
-
-                            else -> {
-                                // Do nothing for price offers in the first pass. But we need to break the loop
-                                break
-                            }
-                        }
-                    }
-                }
-            }
-        }
 
         // 2nd pass to calculate total price
         for ((sku, quantity) in skusMap) {
@@ -71,6 +39,7 @@ class CheckoutSolution {
                 var remainingQuantity = quantity
                 val sortedOffers = item.specialOffers?.sortedByDescending { it.requiredQuantity } ?: emptyList()
                 for (offer in sortedOffers) {
+                    // This while loop does not work for group discounts, as the requiredQuantity is spread across multiple SKUs
                     while (remainingQuantity >= offer.requiredQuantity) {
                         //println("remainingQuantity: $remainingQuantity for SKU: $sku applying offer: $offer")
                         when (offer.offerDetail) {
@@ -81,9 +50,11 @@ class CheckoutSolution {
                             is OfferType.OfferDetail.FreeItemOffer -> {
                                 totalPrice += item.price * offer.requiredQuantity
                             }
+                            else -> continue
                         }
                         remainingQuantity -= offer.requiredQuantity
                     }
+                    totalPrice += handleGroupOffers(skusMap, sku, offer, processedForGroupOffers)
                 }
                 // Add the price of remaining items that do not qualify for any offer
                 totalPrice += remainingQuantity * item.price
@@ -93,6 +64,101 @@ class CheckoutSolution {
             }
         }
         return totalPrice
+    }
+
+    /**
+     * Handle group offers by adjusting the skusMap to account for group discounts
+     * @param skusMap The map containing the SKUs and their quantities
+     * @param sku The SKU being processed
+     * @param offer The offer being processed
+     * @param totalPrice The total price being calculated
+     * @param processedForGroupOffers The map to track which SKUs have been processed for group offers
+     * @return The total price after applying group offers
+     */
+    fun handleGroupOffers(skusMap: MutableMap<String, Int>, sku: String, offer: OfferType, processedForGroupOffers: MutableMap<String, Boolean>): Int {
+        var totalPrice = 0
+        val groupOffer = offer.offerDetail as? OfferType.OfferDetail.GroupOffer ?: return 0
+        groupOffer.groupSKUs.forEach {
+            // Already processed for group offers
+            if (processedForGroupOffers[it] == true) return 0
+        }
+
+        val groupSKUs = offer.offerDetail.groupSKUs
+        val groupQuantity = offer.offerDetail.groupQuantity
+        val offerPrice = offer.offerDetail.offerPrice
+
+        // Calculate total items in the group
+        var totalGroupItems = 0
+        for (groupSKU in groupSKUs) {
+            totalGroupItems += skusMap[groupSKU] ?: 0
+        }
+
+        // Calculate how many times the group offer can be applied
+        val numberOfGroupOffers = totalGroupItems / groupQuantity
+
+        if (numberOfGroupOffers > 0) {
+            totalPrice += numberOfGroupOffers * offerPrice
+
+            // Deduct the used items from the skusMap
+            var itemsToDeduct = numberOfGroupOffers * groupQuantity
+            for (groupSKU in groupSKUs) {
+                val availableItems = skusMap[groupSKU] ?: 0
+                if (availableItems > 0) {
+                    val deductCount = minOf(availableItems, itemsToDeduct)
+                    skusMap[groupSKU] = availableItems - deductCount
+                    itemsToDeduct -= deductCount
+                    if (itemsToDeduct == 0) break
+                }
+            }
+        }
+        // Mark all group SKUs as processed for group offers
+        for (groupSKU in groupSKUs) {
+            processedForGroupOffers[groupSKU] = true
+        }
+        return totalPrice
+    }
+
+    /**
+     * Handle free item offers by adjusting the skusMap to account for free items
+     * @param skusMap The map containing the SKUs and their quantities
+     */
+    fun handleFreeItemOffers(skusMap: MutableMap<String, Int>) {
+        for ((sku, quantity) in skusMap) {
+            val item = ItemRepository.getItem(sku)
+            if (item != null) {
+                var remainingQuantity = quantity
+                val sortedOffers = item.specialOffers?.sortedByDescending { it.requiredQuantity } ?: emptyList()
+                for (offer in sortedOffers) {
+                    // Change the order of processing: only process FreeItemOffer here
+                    when (offer.offerDetail) {
+                        is OfferType.OfferDetail.FreeItemOffer -> {
+                            // Do nothing, continue to while loop below
+                        }
+                        else -> {
+                            // Skip price and group offers in this pass
+                            continue
+                        }
+                    }
+                    while (remainingQuantity >= offer.requiredQuantity) {
+                         if (sku == offer.offerDetail.freeItemSKU) { // Special case: free item is the same as the purchased item (e.g., F)
+                             if (remainingQuantity < offer.requiredQuantity + offer.offerDetail.freeItemQuantity) {
+                                 // Not enough items to qualify for free items
+                                 break
+                             }
+                         }
+                         val freeItemSKU = offer.offerDetail.freeItemSKU
+                         val freeItemQuantity = offer.offerDetail.freeItemQuantity
+                         val toDeductIfSameSku = deductFreeItemsQuantity(sku, skusMap, freeItemSKU, freeItemQuantity)
+
+                         if (sku == offer.offerDetail.freeItemSKU) {
+                             // Adjust remaining quantity for same SKU free item offers
+                             remainingQuantity -= toDeductIfSameSku
+                         }
+                         remainingQuantity -= offer.requiredQuantity
+                    }
+                }
+            }
+        }
     }
 
     /***
