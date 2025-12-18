@@ -50,11 +50,12 @@ class CheckoutSolution {
                             is OfferType.OfferDetail.FreeItemOffer -> {
                                 totalPrice += item.price * offer.requiredQuantity
                             }
-                            else -> continue
+                            else -> break // Group offers are handled separately
                         }
                         remainingQuantity -= offer.requiredQuantity
                     }
                     val priceOfGroupOffer = handleGroupOffers(skusMap, sku, offer, processedForGroupOffers)
+                    println("Price of group offer for SKU $sku: $priceOfGroupOffer")
                     totalPrice += priceOfGroupOffer
                     // Update remaining quantity after group offer processing
                     if (priceOfGroupOffer > 0) {
@@ -88,9 +89,9 @@ class CheckoutSolution {
             if (processedForGroupOffers[it] == true) return 0
         }*/
 
-        val groupSKUs = offer.offerDetail.groupSKUs
-        val groupQuantity = offer.offerDetail.groupQuantity
-        val offerPrice = offer.offerDetail.offerPrice
+        val groupSKUs = groupOffer.groupSKUs
+        val groupQuantity = groupOffer.groupQuantity
+        val offerPrice = groupOffer.offerPrice
 
         // Calculate total items in the group
         var totalGroupItems = 0
@@ -98,8 +99,12 @@ class CheckoutSolution {
             totalGroupItems += skusMap[groupSKU] ?: 0
         }
 
+        println("Total group items for SKUs $groupSKUs: $totalGroupItems")
+
         // Calculate how many times the group offer can be applied
         val numberOfGroupOffers = totalGroupItems / groupQuantity
+
+        println("Total group items for $groupSKUs: $totalGroupItems")
 
         if (numberOfGroupOffers > 0) {
             totalPrice += numberOfGroupOffers * offerPrice
@@ -189,5 +194,6 @@ class CheckoutSolution {
         return 0
     }
 }
+
 
 
