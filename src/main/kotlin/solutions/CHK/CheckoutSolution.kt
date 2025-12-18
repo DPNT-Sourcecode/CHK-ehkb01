@@ -63,7 +63,7 @@ class CheckoutSolution {
 
         // 2nd pass to calculate total price
         for ((sku, quantity) in skusMap) {
-            println("$sku - $quantity")
+            //println("$sku - $quantity")
             val item = ItemRepository.getItem(sku)
             if (item != null) {
                 //Always check the biggest offer first, if quantity is less or has remaining items, check the next offer
