@@ -23,12 +23,8 @@ class CheckoutSolution {
             skusMap[sku] = quantity
         }
 
-        // Create a map to store the skus alrady processed for group offers, to avoid double counting
-        val processedForGroupOffers = mutableMapOf<String, Boolean>()
-
         // 1st pass to handle free item offers
         handleFreeItemOffers(skusMap)
-
 
         // 2nd pass to calculate total price
         for ((sku, quantity) in skusMap) {
@@ -54,8 +50,7 @@ class CheckoutSolution {
                         }
                         remainingQuantity -= offer.requiredQuantity
                     }
-                    val priceOfGroupOffer = handleGroupOffers(skusMap, sku, offer, processedForGroupOffers)
-                    println("Price of group offer for SKU $sku: $priceOfGroupOffer")
+                    val priceOfGroupOffer = handleGroupOffers(skusMap, sku, offer)
                     totalPrice += priceOfGroupOffer
                     // Update remaining quantity after group offer processing
                     if (priceOfGroupOffer > 0) {
@@ -81,13 +76,9 @@ class CheckoutSolution {
      * @param processedForGroupOffers The map to track which SKUs have been processed for group offers
      * @return The total price after applying group offers
      */
-    fun handleGroupOffers(skusMap: MutableMap<String, Int>, sku: String, offer: OfferType, processedForGroupOffers: MutableMap<String, Boolean>): Int {
+    fun handleGroupOffers(skusMap: MutableMap<String, Int>, sku: String, offer: OfferType): Int {
         var totalPrice = 0
         val groupOffer = offer.offerDetail as? OfferType.OfferDetail.GroupOffer ?: return 0
-        /*groupOffer.groupSKUs.forEach {
-            // Already processed for group offers
-            if (processedForGroupOffers[it] == true) return 0
-        }*/
 
         val groupSKUs = groupOffer.groupSKUs
         val groupQuantity = groupOffer.groupQuantity
@@ -123,10 +114,6 @@ class CheckoutSolution {
             }
         }
         println("new skusMap after group offer deduction: $skusMap")
-        // Mark all group SKUs as processed for group offers
-        /*for (groupSKU in groupSKUs) {
-            processedForGroupOffers[groupSKU] = true
-        }*/
         return totalPrice
     }
 
