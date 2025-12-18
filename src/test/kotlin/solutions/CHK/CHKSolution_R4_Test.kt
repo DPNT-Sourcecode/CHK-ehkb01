@@ -30,7 +30,14 @@ class CHKSolution_R4_Test {
     @DisplayName("chechout test with free item offers R and multiple and Qs that should not get the Q special offer")
     fun checkoutWithFreeItemOffersRAndMultipleAndQsThatShouldNotGetTheQSpecialOffer() {
         val result = CheckoutSolution().checkout("RRRQQQ")
-        Assertions.assertEquals(230, result)
+        Assertions.assertEquals(150 + 60, result)
+    }
+
+    @Test
+    @DisplayName("chechout test with free item offers R and still special offer for Q")
+    fun checkoutWithFreeItemOffersRAndStillSpecialOfferForQ() {
+        val result = CheckoutSolution().checkout("RRRQQQQ")
+        Assertions.assertEquals(150 + 80, result)
     }
 
     @Test
@@ -47,3 +54,4 @@ class CHKSolution_R4_Test {
         Assertions.assertEquals(120, result)
     }
 }
+
