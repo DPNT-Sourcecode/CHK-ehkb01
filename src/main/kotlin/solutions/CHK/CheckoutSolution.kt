@@ -72,7 +72,7 @@ class CheckoutSolution {
                 val sortedOffers = item.specialOffers?.sortedByDescending { it.requiredQuantity } ?: emptyList()
                 for (offer in sortedOffers) {
                     while (remainingQuantity >= offer.requiredQuantity) {
-                        println("remainingQuantity: $remainingQuantity for SKU: $sku applying offer: $offer")
+                        //println("remainingQuantity: $remainingQuantity for SKU: $sku applying offer: $offer")
                         when (offer.offerDetail) {
                             is OfferType.OfferDetail.PriceOffer -> {
                                 totalPrice += offer.offerDetail.offerPrice
@@ -116,5 +116,3 @@ class CheckoutSolution {
         return 0
     }
 }
-
-

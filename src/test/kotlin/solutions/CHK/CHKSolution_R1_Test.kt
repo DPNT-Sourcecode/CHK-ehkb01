@@ -43,7 +43,7 @@ class CHKSolution_R1_Test {
     @Test
     @DisplayName("chechout test with invalid SKU")
     fun checkoutWithInvalidSKU() {
-        val result = CheckoutSolution().checkout("ABCDX")
+        val result = CheckoutSolution().checkout("ABCD1")
         Assertions.assertEquals(-1, result)
     }
 
