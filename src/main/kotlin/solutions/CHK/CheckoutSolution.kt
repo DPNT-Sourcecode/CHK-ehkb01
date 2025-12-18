@@ -24,7 +24,7 @@ class CheckoutSolution {
         }
 
         // 1st pass to handle free item offers
-        /*for ((sku, quantity) in skusMap) {
+        for ((sku, quantity) in skusMap) {
             val item = ItemRepository.getItem(sku)
             if (item != null) {
                 var remainingQuantity = quantity
@@ -53,13 +53,14 @@ class CheckoutSolution {
                             }
 
                             else -> {
-                                // Do nothing for price offers in the first pass
+                                // Do nothing for price offers in the first pass. But we need to break the loop
+                                break
                             }
                         }
                     }
                 }
             }
-        }*/
+        }
 
         // 2nd pass to calculate total price
         for ((sku, quantity) in skusMap) {
@@ -115,4 +116,5 @@ class CheckoutSolution {
         return 0
     }
 }
+
 
