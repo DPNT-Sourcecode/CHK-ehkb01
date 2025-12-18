@@ -111,6 +111,7 @@ class CheckoutSolution {
                 }
             }
         }
+        println("new skusMap after group offer deduction: $skusMap")
         // Mark all group SKUs as processed for group offers
         for (groupSKU in groupSKUs) {
             processedForGroupOffers[groupSKU] = true
