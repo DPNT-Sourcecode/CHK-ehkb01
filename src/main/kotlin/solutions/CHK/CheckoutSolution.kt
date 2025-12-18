@@ -54,7 +54,12 @@ class CheckoutSolution {
                         }
                         remainingQuantity -= offer.requiredQuantity
                     }
-                    totalPrice += handleGroupOffers(skusMap, sku, offer, processedForGroupOffers)
+                    val priceOfGroupOffer = handleGroupOffers(skusMap, sku, offer, processedForGroupOffers)
+                    totalPrice += priceOfGroupOffer
+                    // Update remaining quantity after group offer processing
+                    if (priceOfGroupOffer > 0) {
+                        remainingQuantity = skusMap[sku] ?: 0
+                    }
                 }
                 // Add the price of remaining items that do not qualify for any offer
                 totalPrice += remainingQuantity * item.price
@@ -183,3 +188,4 @@ class CheckoutSolution {
         return 0
     }
 }
+
